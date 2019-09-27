@@ -1,0 +1,18 @@
+digraph G {
+  nodesep=0.5;
+    charset="UTF-8";
+    rankdir=LR;
+    fixedsize=true;
+    compound=true;
+    node [style="rounded,filled", width=0, height=0, shape=box, fillcolor="#E5E5E5", concentrate=true]
+  
+  "app.js";
+  "agent.js";
+  "lib/init.js";
+  "lib/watcher.js";
+  "lib/utils.js";
+  "app.js" -> "lib/init.js";
+  "agent.js" -> "lib/init.js";
+  "lib/init.js" -> "lib/watcher.js";
+  "lib/watcher.js" -> "lib/utils.js";
+}

@@ -1,0 +1,9 @@
+digraph G {
+  "agent.js";
+  "lib/init.js";
+  "lib/watcher.js";
+  "lib/utils.js";
+  "agent.js" -> "lib/init.js";
+  "lib/init.js" -> "lib/watcher.js";
+  "lib/watcher.js" -> "lib/utils.js";
+}

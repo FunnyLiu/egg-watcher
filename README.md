@@ -1,25 +1,57 @@
 # egg-watcher
-File watcher plugin for egg
 
-[![NPM version][npm-image]][npm-url]
-[![build status][travis-image]][travis-url]
-[![Test coverage][codecov-image]][codecov-url]
-[![David deps][david-image]][david-url]
-[![Known Vulnerabilities][snyk-image]][snyk-url]
-[![npm download][download-image]][download-url]
+# 源码分析
 
-[npm-image]: https://img.shields.io/npm/v/egg-watcher.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/egg-watcher
-[travis-image]: https://img.shields.io/travis/eggjs/egg-watcher.svg?style=flat-square
-[travis-url]: https://travis-ci.org/eggjs/egg-watcher
-[codecov-image]: https://codecov.io/github/eggjs/egg-watcher/coverage.svg?branch=master
-[codecov-url]: https://codecov.io/github/eggjs/egg-watcher?branch=master
-[david-image]: https://img.shields.io/david/eggjs/egg-watcher.svg?style=flat-square
-[david-url]: https://david-dm.org/eggjs/egg-watcher
-[snyk-image]: https://snyk.io/test/npm/egg-watcher/badge.svg?style=flat-square
-[snyk-url]: https://snyk.io/test/npm/egg-watcher
-[download-image]: https://img.shields.io/npm/dm/egg-watcher.svg?style=flat-square
-[download-url]: https://npmjs.org/package/egg-watcher
+底层基于ws模块负责文件监听，这里进行了配置和默认eventSource的封装。库本身是继承自sdk-base。
+文件监听后对外抛出事件。
+
+
+## 文件结构
+
+``` bash
+├── agent.js - 直接依赖lib/init.js
+├── app.js - 直接依赖lib/init.js
+├── config
+|  ├── config.default.js - 配置，提供eventSources指向event-sources文件夹
+|  ├── config.local.js
+|  └── config.unittest.js
+├── lib
+|  ├── event-sources
+|  |  ├── default.js
+|  |  └── development.js - 基于ws模块，监听文件夹下修改内容，抛出事件change
+|  ├── init.js - 对日志进行处理，在beforeStart阶段调用lib/watcher.js的ready()
+|  ├── utils.js
+|  └── watcher.js - 继承自sdk-base模块，基于配置中的eventSource，默认是lib/event-sources/development.js，监听后对外抛事件
+```
+
+## 对外模块依赖
+
+![](./graphviz/module.svg)
+
+## 内部模块依赖
+
+![](./graphviz/inline.gv.svg)
+
+## 逐个文件分析
+
+### app.js
+
+直接依赖lib/init.js
+
+### agent.js
+
+直接依赖lib/init.js
+
+### lib/init.js
+
+从app.coreLogger拿到日志对象，监听watcher对象，输出日志。
+在app.beforeStart时，调用基于lib/watcher.js封装的watcher.ready()方法。
+
+### lib/watcher.js
+
+继承自sdk-base模块[源码分析](https://github.com/FunnyLiu/sdk-base/tree/readsource)，找到配置中的eventSource也就是lib/event-sources/development.js，进行文件监听并外抛事件。
+
+
 
 ## Usage
 
